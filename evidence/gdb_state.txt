@@ -1,0 +1,5 @@
+(gdb) p/x &known_var
+$1 = 0x20000000
+
+(gdb) x/wx &known_var
+0x20000000 <known_var>: 0x1234abcd

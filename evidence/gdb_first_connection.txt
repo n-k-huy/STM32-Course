@@ -1,0 +1,44 @@
+arm-none-eabi-gdb firmware.elf
+GNU gdb (Arm GNU Toolchain 15.2.Rel1 (Build arm-15.86)) 16.3.90.20250906-git
+Copyright (C) 2024 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "--host=i686-w64-mingw32 --target=arm-none-eabi".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://gitlab.arm.com/tooling/gnu-devtools-for-arm/-/issues/>.
+Find the GDB manual and other documentation resources online at:
+--Type <RET> for more, q to quit, c to continue without paging--
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from firmware.elf...
+
+(gdb) target remote localhost:3333
+Remote debugging using localhost:3333
+Reset_Handler () at common/startup.c:6
+6       void Reset_Handler(void) {
+
+(gdb) monitor reset halt
+[stm32f1x.cpu] halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08000060 msp: 0x20005000
+
+(gdb) info program
+Last stopped for thread 1 (Remote target).
+        `D:\Kim_Huy\Automotive Embedded\STM32\Bai hoc\Bai 3_Debug STM32F103C8T6\L03_STUDENT_PROJECT\firmware.elf', file type elf32-littlearm.
+        Entry point: 0x8000060
+        0x08000000 - 0x08000040 is .isr_vector
+        0x08000040 - 0x080000a0 is .text
+        0x20000000 - 0x20000004 is .data
+        0x20000004 - 0x20000008 is .bss
+Program stopped at 0x8000060.
+It stopped with signal SIGINT, Interrupt.
+Type "info stack" or "info registers" for more information.
+
+(gdb) info register pc sp lr
+pc             0x8000060           0x8000060 <Reset_Handler>
+sp             0x20005000          0x20005000
+lr             0xffffffff          -1
