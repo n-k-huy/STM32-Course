@@ -1,0 +1,67 @@
+make clean
+rm -f firmware.elf firmware.bin firmware.map
+
+make
+arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -std=c11 -ffreestanding -fdata-sections -ffunction-sections -Wall -Wextra -Werror -Og -g3 main.c common/startup.c -nostdlib -Wl,--gc-sections -Wl,-T,common/linker.ld -Wl,-Map,firmware.map -o firmware.elf
+arm-none-eabi-size firmware.elf
+   text    data     bss     dec     hex filename
+    160       4       4     168      a8 firmware.elf
+arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
+
+verify ELF L03
+openocd -f common/openocd/stm32f103_stlink.cfg -c "program firmware.elf verify reset exit" 
+Open On-Chip Debugger 0.12.0
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 1000 kHz
+
+Info : clock speed 1000 kHz
+Info : STLINK V2J37S7 (API v2) VID:PID 0483:3748
+Info : Target voltage: 3.256000
+Info : [stm32f1x.cpu] Cortex-M3 r2p0 processor detected
+Info : [stm32f1x.cpu] target has 6 breakpoints, 4 watchpoints
+Info : starting gdb server for stm32f1x.cpu on 3333
+Info : Listening on port 3333 for gdb connections
+[stm32f1x.cpu] halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08000060 msp: 0x20005000
+** Programming Started **
+Info : device id = 0x20030410
+Info : flash size = 128 KiB
+Warn : Adding extra erase range, 0x080000a4 .. 0x080003ff
+** Programming Finished **
+** Verify Started **
+** Verified OK **
+** Resetting Target **
+shutdown command invoked
+
+PC of main at L03 ELF
+(gdb) break main
+warning: could not convert 'main' from the host encoding (CP1252) to UTF-32.
+This normally should not happen, please file a bug report.
+Breakpoint 1 at 0x8000040: file main.c, line 8.
+Note: automatically using hardware breakpoints for read-only addresses.
+
+(gdb) info register pc lr sp
+pc             0x8000040           0x8000040 <main>
+lr             0x800008b           134217867
+sp             0x20004ff8          0x20004ff8
+
+PC of main at LO3 ELF with hello_world() function
+(gdb) break main
+warning: could not convert 'main' from the host encoding (CP1252) to UTF-32.
+This normally should not happen, please file a bug report.
+Breakpoint 1 at 0x8000040: file main.c, line 12.
+Note: automatically using hardware breakpoints for read-only addresses.
+
+(gdb) info register pc lr sp
+pc             0x8000040           0x8000040 <main>
+lr             0x800008b           134217867
+sp             0x20004ff8          0x20004ff8
+
+SHA-256 ELF L03
+69f8fe0eb41827ddb64918b87ae203e83ff3e70c2aff271490ee9218fad4eb94 *firmware.elf
+
+SHA-256 ELF L03 with hello_world() function
+4a8bbabb14fc6bd244060fa865841ed592ca00b6376405a16a7bbd2d5d94c1f3 *firmware.elf
